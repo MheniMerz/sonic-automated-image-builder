@@ -9,6 +9,24 @@ function usage {
 
 [[ $# -ne 1 ]] && usage
 
+cd /home/$USER/
+
+# install prerequisites
+# ======== need to add checks if programs are already installed ========
+sudo apt -y update
+
+if ! which docker &> /dev/null; then
+   sudo apt install -y docker.io
+fi
+
+
+sudo apt install -y python3-pip
+sudo python -m pip install -U pip==9.0.3
+sudo pip3 install --force-reinstall --upgrade jinja2>=2.10
+sudo pip3 install j2cli
+
+git clone https://github.com/Azure/sonic-buildimage.git
+
 # Ensure the 'overlay' module is loaded on your development system
 sudo modprobe overlay
 
@@ -31,7 +49,7 @@ sudo gpasswd -a $USER docker
 
 /usr/bin/newgrp docker << EONG
 # newgrp creats a new subshell, we're using redirection to avoid the script exiting.
-EONG
+pwd
 # Execute make init once after cloning the repo, or after fetching remote repo with submodule updates
 make init
 
@@ -41,5 +59,5 @@ make configure PLATFORM=$1
 # Build SONiC image
 make all
 
-
+EONG
 
