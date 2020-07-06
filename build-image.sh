@@ -20,7 +20,10 @@ if ! which docker &> /dev/null; then
 fi
 
 
-sudo apt install -y python3-pip
+if ! which docker &> /dev/null; then
+   sudo apt install -y python3-pip
+fi
+
 sudo python -m pip install -U pip==9.0.3
 sudo pip3 install --force-reinstall --upgrade jinja2>=2.10
 sudo pip3 install j2cli
@@ -32,7 +35,7 @@ sudo modprobe overlay
 
 # Enter the source directory
 cd /home/$USER/sonic-buildimage
-
+rm .platform
 # (Optional) Checkout a specific branch. By default, it uses master branch. For example, to checkout the branch 201911, use "git checkout 201911"
 git checkout master
 
