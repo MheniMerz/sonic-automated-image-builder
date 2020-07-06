@@ -3,7 +3,7 @@ programname=$0
 
 function usage {
     echo "usage: $programname ASIC_vendor"
-    echo "  ASIC_vendor = Broadcom | Nephos | Cavium | Barefoot | Innovium | Centec | Marvell |Mellanox"
+    echo "  ASIC_vendor = broadcom | nephos | cavium | barefoot | innovium | centec | marvell | mellanox"
     exit 1
 }
 
@@ -20,22 +20,36 @@ if ! which docker &> /dev/null; then
 fi
 
 
-if ! which docker &> /dev/null; then
+if ! which python3 &< /dev/null; then
    sudo apt install -y python3-pip
 fi
 
-sudo python -m pip install -U pip==9.0.3
+if ! which make&> /dev/null; then
+   sudo apt install -y make
+fi
+
+sudo python3 -m pip install -U pip==9.0.3
 sudo pip3 install --force-reinstall --upgrade jinja2>=2.10
 sudo pip3 install j2cli
 
-git clone https://github.com/Azure/sonic-buildimage.git
+if [ ! -d /home/$USER/sonic-buildimage]; then
+   git clone https://github.com/Azure/sonic-buildimage.git
+fi
+
+
+
 
 # Ensure the 'overlay' module is loaded on your development system
 sudo modprobe overlay
 
 # Enter the source directory
 cd /home/$USER/sonic-buildimage
-rm .platform
+
+#remove .platform file as it causes build failure
+if [ -f .platform]; then
+    rm .platform
+fi
+
 # (Optional) Checkout a specific branch. By default, it uses master branch. For example, to checkout the branch 201911, use "git checkout 201911"
 git checkout master
 
